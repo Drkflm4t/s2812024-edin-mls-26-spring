@@ -269,7 +269,7 @@ def load_model_from_hf(model_name: str = "zai-org/GLM-ASR-Nano-2512"):
 
     print("Loading HuggingFace weights...")
     hf_model = GlmAsrForConditionalGeneration.from_pretrained(
-        model_name, torch_dtype=torch.float32, device_map="cpu"
+        model_name, torch_dtype=torch.float32
     )
 
     processor = AutoProcessor.from_pretrained(model_name)
