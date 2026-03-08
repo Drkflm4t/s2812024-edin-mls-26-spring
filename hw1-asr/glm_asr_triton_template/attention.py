@@ -6,6 +6,8 @@ End-to-end implementation using Triton kernels
 Fill in the TODO sections to implement attention using Triton kernels
 """
 
+import os
+
 import numpy as np
 import torch
 import triton
@@ -387,8 +389,13 @@ def scaled_dot_product_attention(
     if scale is None:
         scale = 1.0 / np.sqrt(head_dim)
 
+    # FlashAttention is enabled by default to satisfy assignment optimization requirements.
+    enable_flash = os.environ.get("GLM_ASR_ENABLE_FLASH", "1") == "1"
+
     # Fast path: FlashAttention-style kernel (online softmax + fused V accumulation).
     use_flash = (
+        enable_flash
+        and
         q.is_cuda
         and attention_mask is None
         and head_dim <= MAX_ATTENTION_DIM
